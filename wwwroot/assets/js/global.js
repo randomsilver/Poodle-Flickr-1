@@ -14,7 +14,7 @@ FLICKR.getImages = (function(){
 	var createImgDomNode = function(imageUrl){
 		var imageNode = '<img src="' + imageUrl + '"/>';
 		$('body').append(imageNode);
-	}
+	};
 
 	var requestPhotos = function(){
 		$.ajax({
@@ -22,7 +22,7 @@ FLICKR.getImages = (function(){
 			dataType: 'jsonp',
 			success: function(data){
 
-				var photoArr = data.items; 
+				var photoArr = data.items;
 
 				for (i in photoArr){
 					createImgDomNode(data.items[i].media.m);
@@ -36,8 +36,8 @@ FLICKR.getImages = (function(){
 	return{
 		init: function(){
 			requestPhotos();
-		} 
-	}
+		}
+	};
 
 }());
 
