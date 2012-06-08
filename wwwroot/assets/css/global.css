@@ -42,87 +42,12 @@ Table of contents
    2.0 - Reset 
  --------------------------------------------------*/
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-size: 100%;
-	vertical-align: baseline;
-	background: transparent;
-}
-
-body {
-	line-height: 1;
-}
-
-img, 
-object {
-	max-width: 100%;
-}
 
 /* ------------------------------------------------
    3.0 - Default 
  --------------------------------------------------*/
 
- body{
- 	background: #090909;
- 	color: #fff;
- }
 
 /* ------------------------------------------------
    4.0 - Fonts 
  --------------------------------------------------*/
-
-h1, h2, h3, h4, h5, h6, p, li, a{
-	font-family: Georgia, Helvetica, Arial, sans-serif;
-}
-
- h1{
- 	color: #3d3d3d;
- 	font-size: 26px;
- }
-
-/* B1.0 - Widescreen */
-@media screen and (min-width: 1025px){
-
-}
-
-/* B2.0 - Large Tablets in landscape and notebooks */
-@media screen and (max-width: 1024px){
-
-
-}
-
-/* B3.0 - Large Tablets in portrait */
-@media screen and (max-width: 768px){
-	
-}
-
-/* B4.0 - Small Tablets in portrait */
-@media screen and (max-width: 600px){
-	
-}
-
-/* B5.0 - Small Tablets in landscape */
-@media screen and (max-width: 800px){
- 	
-}
-
-/* B6.0 - Smartphone landscape */
-@media screen and (max-width: 480px){
-	
-}
-
-/* B7.0 - Smartphone portrait */
-@media screen and (max-width: 320px){
-	
-}

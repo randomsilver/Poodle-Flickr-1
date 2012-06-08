@@ -12,8 +12,8 @@ FLICKR.getImages = (function(){
 	var photoSetURL = 'http://api.flickr.com/services/feeds/groups_pool.gne?id=83376903@N00&format=json&jsoncallback=?';
 	
 	var createImgDomNode = function(imageUrl){
-		var imageNode = '<img src="' + imageUrl + '"/>';
-		$('body').append(imageNode);
+		var imageNode = '<img src="' + imageUrl + '" id="image'+ i +'"/>';
+		$('#image-gallery').append(imageNode, i);
 	};
 
 	var requestPhotos = function(){
@@ -25,7 +25,7 @@ FLICKR.getImages = (function(){
 				var photoArr = data.items;
 
 				for (i in photoArr){
-					createImgDomNode(data.items[i].media.m);
+					createImgDomNode(data.items[i].media.m, i);
 				}
 
 
@@ -36,10 +36,29 @@ FLICKR.getImages = (function(){
 	return{
 		init: function(){
 			requestPhotos();
+			FLICKR.addFilter.init();
 		}
 	};
 
 }());
+
+FLICKR.addFilter = (function(){
+	
+	var bindFliterListener = function(){
+		
+		
+		Caman('#image2', function(){
+			this.brightness(-100).render();
+		})
+		
+	}
+	
+	return{
+		init: function(){
+			bindFliterListener();
+		}
+	}
+})();
 
 $(document).ready(function(){
 	FLICKR.getImages.init();
