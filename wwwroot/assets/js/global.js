@@ -28,14 +28,13 @@ FLICKR.getImages = (function(){
 					createImgDomNode(data.items[i].media.m, i);
 				}
 
-
 			}
 		});
 	};
 
 	return{
 		init: function(){
-			requestPhotos();
+			//requestPhotos();
 			FLICKR.addFilter.init();
 		}
 	};
@@ -45,16 +44,27 @@ FLICKR.getImages = (function(){
 FLICKR.addFilter = (function(){
 	
 	var bindFliterListener = function(){
+	
+		var image = Caman("#localImg", function () {});
 		
+		function render(filter) {
+			image.revert(function () {
+				image[filter]().render();
+			});
+		};
+			
+		$('#filter-selection a').on('click', function(e){			
+			e.preventDefault();
+			
+			var filter = $(this).attr('class');
+			render(filter);
+		});
 		
-		Caman('#image2', function(){
-			this.brightness(-100).render();
-		})
-		
-	}
+	};
 	
 	return{
 		init: function(){
+			Caman.remoteProxy = Caman.IO.useProxy('php');
 			bindFliterListener();
 		}
 	}
