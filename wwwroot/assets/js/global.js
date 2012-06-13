@@ -94,7 +94,7 @@ FLICKR.montage = (function(){
  				if( cnt === totalImgs ) {
  					$imgs.show();
  					$container.montage({
- 						liquid 	: false,
+ 						liquid 	: true,
  						fillLastRow : false,
  						margin: 2,
  						//fixedHeight : 60,
