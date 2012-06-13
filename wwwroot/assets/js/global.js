@@ -15,17 +15,14 @@ FLICKR.getImages = (function(){
 	};
 
 	var requestPhotos = function(){
-		var AUTH_TOKEN = '72157630111491400-e73df37bd10f1fc8',
-			API_KEY = 'efa327fa27e64f3a0692c3ffb7f8ed5c',
-			API_SIG = '0f8a80506649f998ba312e8df70e1f6d',
+		var API_KEY = '3d979b1c03c5752ff713cb9446f74410',
 			GROUP_ID = '62496320%40N00',
 			photoSetURL,
 			showOnPage = 8,
 			photoString = '';
         
         var photoSetURL = 'http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key='
-        					+ API_KEY + '&group_id=' + GROUP_ID +'&per_page=' + showOnPage + '&format=json'
-        					+ '&nojsoncallback=1&auth_token=' + AUTH_TOKEN + '&api_sig=' + API_SIG;
+        					+ API_KEY + '&group_id=' + GROUP_ID +'&per_page=' + showOnPage + '&format=json&nojsoncallback=1';
 		
 		$.ajax({
 			url: photoSetURL,
