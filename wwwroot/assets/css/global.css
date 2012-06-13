@@ -58,6 +58,10 @@ Table of contents
 		position:absolute;
 		outline:none;
 	}
+	.face {
+	    border: 2px solid white;
+    }
+	
 
 /* ------------------------------------------------
    4.0 - Fonts 

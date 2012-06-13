@@ -8,6 +8,7 @@
 var FLICKR = window.FLICKR || {};
 
 FLICKR.imageContainer = '#flickr-gallery';
+FLICKR.imageCount = 0;
 
 FLICKR.getImages = (function(){
 
@@ -31,11 +32,13 @@ FLICKR.getImages = (function(){
 						thumbPhotoURL = basePhotoURL + '_n.jpg',
 						mediumPhotoURL = basePhotoURL + '.jpg';
 
-					photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
+					FLICKR.imageCount = FLICKR.imageCount + 1;
+					photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img id="flickr-img-' + FLICKR.imageCount + '" src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
 				});
 				 
 				$(photoString).appendTo(FLICKR.imageContainer);
 				FLICKR.montage.init();
+				FLICKR.detectfaces.init();
 			}
 		});
 	};
@@ -78,18 +81,52 @@ FLICKR.addFilter = (function(){
 	}
 })();
 
+FLICKR.detectfaces = (function(){
+	
+	init = function() {
+		console.log($(FLICKR.imageContainer + ' #flickr-img-6'))
+		var coords = $('#flickr-img-9').faceDetection({
+				complete: function() {
+					console.log('Fadedetection completed!');
+				},
+				error:function(img, code, message) {
+					console.log('Error: '+message);
+				}
+			});
+		
+		for (var i = 0; i < coords.length; i++) {
+			$('<div>', {
+				'class':'face',
+				'css': {
+					'position':	'absolute',
+					'left':		coords[i].positionX +5+'px',
+					'top':		coords[i].positionY +5+'px',
+					'width': 	coords[i].width		+'px',
+					'height': 	coords[i].height	+'px'
+				}
+			})
+			.appendTo('.container');
+		}
+	}
+	
+	return {
+		init: init
+	}
+	
+})();
+
 FLICKR.montage = (function(){
 	
  	init = function() {
  		var $container 	= $(FLICKR.imageContainer),
  			$imgs		= $container.find('img').hide(),
  			totalImgs	= $imgs.length,
+ 			coords		= '',
  			cnt			= 0;
 
  		$imgs.each(function(i) {
  			var $img	= $(this);
  			$('<img/>').load(function() {
- 				console.log('montaged');
  				++cnt;
  				if( cnt === totalImgs ) {
  					$imgs.show();
@@ -105,10 +142,9 @@ FLICKR.montage = (function(){
  							max	: 240
  						}
  					});
- 					
  				}
  			}).attr('src',$img.attr('src'));
- 		});	
+ 		});
  	}
 	
  	return {
