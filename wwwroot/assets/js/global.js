@@ -7,18 +7,15 @@
 
 var FLICKR = window.FLICKR || {};
 
-FLICKR.getImages = (function(){
+FLICKR.imageContainer = '#flickr-gallery';
 
-	var createImgDomNode = function(imageUrl){
-		var imageNode = '<img src="' + imageUrl + '" id="image'+ i +'"/>';
-		$('#image-gallery').append(imageNode, i);
-	};
+FLICKR.getImages = (function(){
 
 	var requestPhotos = function(){
 		var API_KEY = '3d979b1c03c5752ff713cb9446f74410',
 			GROUP_ID = '62496320%40N00',
 			photoSetURL,
-			showOnPage = 8,
+			showOnPage = 18,
 			photoString = '';
         
         var photoSetURL = 'http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key='
@@ -31,14 +28,14 @@ FLICKR.getImages = (function(){
 
 				$.each(data.photos.photo, function(i, rPhoto){
 					var basePhotoURL = 'http://farm' + rPhoto.farm + '.static.flickr.com/' + rPhoto.server + '/' + rPhoto.id + '_' + rPhoto.secret,  
-						thumbPhotoURL = basePhotoURL + '_s.jpg',
+						thumbPhotoURL = basePhotoURL + '_n.jpg',
 						mediumPhotoURL = basePhotoURL + '.jpg';
 
 					photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
 				});
 				 
-				$(photoString).appendTo("#flickr-gallery");
-
+				$(photoString).appendTo(FLICKR.imageContainer);
+				FLICKR.montage.init();
 			}
 		});
 	};
@@ -79,6 +76,45 @@ FLICKR.addFilter = (function(){
 			bindFliterListener();
 		}
 	}
+})();
+
+FLICKR.montage = (function(){
+	
+ 	init = function() {
+ 		var $container 	= $(FLICKR.imageContainer),
+ 			$imgs		= $container.find('img').hide(),
+ 			totalImgs	= $imgs.length,
+ 			cnt			= 0;
+
+ 		$imgs.each(function(i) {
+ 			var $img	= $(this);
+ 			$('<img/>').load(function() {
+ 				console.log('montaged');
+ 				++cnt;
+ 				if( cnt === totalImgs ) {
+ 					$imgs.show();
+ 					$container.montage({
+ 						liquid 	: false,
+ 						fillLastRow : false,
+ 						margin: 2,
+ 						//fixedHeight : 60,
+ 						minw : 100,
+ 						alternateHeight	: true,
+ 						alternateHeightRange : {
+ 							min	: 100,
+ 							max	: 240
+ 						}
+ 					});
+ 					
+ 				}
+ 			}).attr('src',$img.attr('src'));
+ 		});	
+ 	}
+	
+ 	return {
+ 		init: init
+ 	}
+
 })();
 
 $(document).ready(function(){

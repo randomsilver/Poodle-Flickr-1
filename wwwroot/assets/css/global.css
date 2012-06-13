@@ -46,7 +46,18 @@ Table of contents
 /* ------------------------------------------------
    3.0 - Default 
  --------------------------------------------------*/
-
+    #flickr-gallery {
+        width: 938px;    
+    }
+    .am-wrapper {
+		float:left;
+		position:relative;
+		overflow:hidden;
+	}
+    .am-wrapper img {
+		position:absolute;
+		outline:none;
+	}
 
 /* ------------------------------------------------
    4.0 - Fonts 
