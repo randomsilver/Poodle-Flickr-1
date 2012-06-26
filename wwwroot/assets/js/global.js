@@ -9,7 +9,6 @@ var FLICKR = window.FLICKR || {};
 
 FLICKR.imageContainer = '#flickr-gallery';
 FLICKR.imageCount = 0;
-
 FLICKR.getImages = (function(){
 
 	var requestPhotos = function(){
@@ -20,13 +19,12 @@ FLICKR.getImages = (function(){
 			photoString = '';
         
         var photoSetURL = 'http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key='
-        					+ API_KEY + '&group_id=' + GROUP_ID +'&per_page=' + showOnPage + '&format=json&nojsoncallback=1';
+        					+ API_KEY + '&group_id=' + GROUP_ID +'&per_page=' + showOnPage + '&format=json&jsoncallback=?';
 		
 		$.ajax({
 			url: photoSetURL,
-			dataType: 'json',
+			dataType: 'jsonp',
 			success: function(data){
-
 				$.each(data.photos.photo, function(i, rPhoto){
 					var basePhotoURL = 'http://farm' + rPhoto.farm + '.static.flickr.com/' + rPhoto.server + '/' + rPhoto.id + '_' + rPhoto.secret,  
 						thumbPhotoURL = basePhotoURL + '_n.jpg',
@@ -37,7 +35,8 @@ FLICKR.getImages = (function(){
 				});
 				 
 				$(photoString).appendTo(FLICKR.imageContainer);
-				FLICKR.montage.init();
+				//FLICKR.montage.init();
+				//FLICKR.addFilter.init();
 				FLICKR.detectfaces.init();
 			}
 		});
@@ -46,19 +45,19 @@ FLICKR.getImages = (function(){
 	return{
 		init: function(){
 			requestPhotos();
-			FLICKR.addFilter.init();
 		}
 	};
 
 }());
 
 FLICKR.addFilter = (function(){
-	
+
 	var bindFliterListener = function(){
 	
-		var image = Caman("#localImg", function () {});
+		var image = Caman("#flickr-img-5", function () {});
 		
 		function render(filter) {
+			
 			image.revert(function () {
 				image[filter]().render();
 			});
@@ -75,7 +74,7 @@ FLICKR.addFilter = (function(){
 	
 	return{
 		init: function(){
-			Caman.remoteProxy = Caman.IO.useProxy('php');
+			Caman.remoteProxy = '../proxies/caman_proxy.php';
 			bindFliterListener();
 		}
 	}
@@ -83,16 +82,16 @@ FLICKR.addFilter = (function(){
 
 FLICKR.detectfaces = (function(){
 	
-	init = function() {
-		console.log($(FLICKR.imageContainer + ' #flickr-img-6'))
+	var getFaceCoordinates = function() {
+	
 		var coords = $('#flickr-img-9').faceDetection({
-				complete: function() {
-					console.log('Fadedetection completed!');
-				},
-				error:function(img, code, message) {
-					console.log('Error: '+message);
-				}
-			});
+			error: function(img, code, message){
+				console.log(message);
+			},
+			complete: function(img, coords){
+				console.log(coords);
+			}
+		});
 		
 		for (var i = 0; i < coords.length; i++) {
 			$('<div>', {
@@ -107,17 +106,23 @@ FLICKR.detectfaces = (function(){
 			})
 			.appendTo('.container');
 		}
+		
+		console.log(coords);
+		
 	}
 	
 	return {
-		init: init
+		init: function(){
+			getFaceCoordinates();
+		}
 	}
 	
 })();
 
 FLICKR.montage = (function(){
 	
- 	init = function() {
+ 	createMontage = function() {
+ 	
  		var $container 	= $(FLICKR.imageContainer),
  			$imgs		= $container.find('img').hide(),
  			totalImgs	= $imgs.length,
@@ -134,7 +139,6 @@ FLICKR.montage = (function(){
  						liquid 	: true,
  						fillLastRow : false,
  						margin: 2,
- 						//fixedHeight : 60,
  						minw : 100,
  						alternateHeight	: true,
  						alternateHeightRange : {
@@ -148,7 +152,9 @@ FLICKR.montage = (function(){
  	}
 	
  	return {
- 		init: init
+ 		init: function(){
+	 		createMontage();
+ 		}
  	}
 
 })();
