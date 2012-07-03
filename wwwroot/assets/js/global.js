@@ -9,36 +9,44 @@ var FLICKR = window.FLICKR || {};
 
 FLICKR.imageContainer = '#flickr-gallery';
 FLICKR.imageCount = 0;
+FLICKR.page = 0;
 
-FLICKR.getImages = (function(){
+FLICKR.images = (function(){
 
-	var requestPhotos = function(){
+	var renderPhotos = function( data ) {
+		var photoString = '';
+		
+		$.each(data.photos.photo, function(i, rPhoto){
+			var basePhotoURL = 'http://farm' + rPhoto.farm + '.static.flickr.com/' + rPhoto.server + '/' + rPhoto.id + '_' + rPhoto.secret,  
+				thumbPhotoURL = basePhotoURL + '_n.jpg',
+				mediumPhotoURL = basePhotoURL + '.jpg';
+
+			FLICKR.imageCount = FLICKR.imageCount + 1;
+			photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img id="flickr-img-' + FLICKR.imageCount + '" src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
+		});
+		
+		$('<div class="page" id="page-' + FLICKR.page + '">' + photoString + '</div>').appendTo(FLICKR.imageContainer);
+	};
+	
+	var requestPhotos = function( page ){
 		var API_KEY = '3d979b1c03c5752ff713cb9446f74410',
 			GROUP_ID = '62496320%40N00',
 			photoSetURL,
 			showOnPage = 18,
-			photoString = '';
-        
-        var photoSetURL = 'http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key='
-        					+ API_KEY + '&group_id=' + GROUP_ID +'&per_page=' + showOnPage + '&format=json&nojsoncallback=1';
+        	page = page || 1;
+        		
+        photoSetURL = 'http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=' + API_KEY + 
+        			   '&group_id=' + GROUP_ID +'&page=' + page + '&per_page=' + showOnPage + '&format=json&nojsoncallback=1';
 		
-		$.ajax({
+		FLICKR.page = page;
+		
+        $.ajax({
 			url: photoSetURL,
 			dataType: 'json',
 			success: function(data){
-
-				$.each(data.photos.photo, function(i, rPhoto){
-					var basePhotoURL = 'http://farm' + rPhoto.farm + '.static.flickr.com/' + rPhoto.server + '/' + rPhoto.id + '_' + rPhoto.secret,  
-						thumbPhotoURL = basePhotoURL + '_n.jpg',
-						mediumPhotoURL = basePhotoURL + '.jpg';
-
-					FLICKR.imageCount = FLICKR.imageCount + 1;
-					photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img id="flickr-img-' + FLICKR.imageCount + '" src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
-				});
-				 
-				$(photoString).appendTo(FLICKR.imageContainer);
-				FLICKR.montage.init();
-				FLICKR.detectfaces.init();
+				renderPhotos( data );
+				FLICKR.montage.init( $('#page-' + FLICKR.page) );
+				//FLICKR.detectfaces.init();
 			}
 		});
 	};
@@ -47,7 +55,8 @@ FLICKR.getImages = (function(){
 		init: function(){
 			requestPhotos();
 			FLICKR.addFilter.init();
-		}
+		},
+		loadPhotos: requestPhotos
 	};
 
 }());
@@ -84,8 +93,12 @@ FLICKR.addFilter = (function(){
 FLICKR.detectfaces = (function(){
 	
 	init = function() {
-		console.log($(FLICKR.imageContainer + ' #flickr-img-6'))
-		var coords = $('#flickr-img-9').faceDetection({
+		console.log($(FLICKR.imageContainer + ' #flickr-img-9'))
+		
+		$('img').each(function(index, image) {
+			
+			console.log(image)
+			var coords = $(image).faceDetection({
 				complete: function() {
 					console.log('Fadedetection completed!');
 				},
@@ -93,32 +106,33 @@ FLICKR.detectfaces = (function(){
 					console.log('Error: '+message);
 				}
 			});
-		
-		for (var i = 0; i < coords.length; i++) {
-			$('<div>', {
-				'class':'face',
-				'css': {
-					'position':	'absolute',
-					'left':		coords[i].positionX +5+'px',
-					'top':		coords[i].positionY +5+'px',
-					'width': 	coords[i].width		+'px',
-					'height': 	coords[i].height	+'px'
-				}
-			})
-			.appendTo('.container');
-		}
-	}
+			
+			for (var i = 0; i < coords.length; i++) {
+				$('<div>', {
+					'class':'face',
+					'css': {
+						'position':	'absolute',
+						'left':		coords[i].positionX +5+'px',
+						'top':		coords[i].positionY +5+'px',
+						'width': 	coords[i].width		+'px',
+						'height': 	coords[i].height	+'px'
+					}
+				})
+				.appendTo('.container');
+			}
+		});
+	};
 	
 	return {
 		init: init
-	}
+	};
 	
 })();
 
 FLICKR.montage = (function(){
 	
- 	init = function() {
- 		var $container 	= $(FLICKR.imageContainer),
+ 	init = function( imageContainer ) {
+ 		var $container 	= imageContainer || $(FLICKR.imageContainer),
  			$imgs		= $container.find('img').hide(),
  			totalImgs	= $imgs.length,
  			coords		= '',
@@ -154,5 +168,9 @@ FLICKR.montage = (function(){
 })();
 
 $(document).ready(function(){
-	FLICKR.getImages.init();
+	FLICKR.images.init();
+	$('#loadMore').click(function() {
+		FLICKR.page = FLICKR.page + 1;
+		FLICKR.images.loadPhotos( FLICKR.page );
+	});
 });
