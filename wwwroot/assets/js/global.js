@@ -51,7 +51,6 @@ FLICKR.images = (function(){
 				
 				// image montage
 				FLICKR.montage.init( $('#page-' + FLICKR.pages), callback );
-				
 				//FLICKR.detectfaces.init();
 			}
 		});
@@ -173,9 +172,7 @@ FLICKR.montage = (function(){
  	}
 	
  	return {
- 		init: function(){
-	 		createMontage();
- 		}
+ 		init: init
  	}
 
 })();
@@ -262,8 +259,33 @@ FLICKR.eventHandlers = (function(){
 
 })();
 
+FLICKR.injectLightbox = (function(){
+	
+	$imageThumb = $('#flickr-gallery a');
+	
+	var openLightbox = function(){
+	
+		console.log($imageThumb);
+		
+		$imageThumb.on('click', function(e){
+			e.preventDefault();
+		})			
+	
+	};
+	
+	return{
+		
+		init: function(){
+			openLightbox();
+		}
+		
+	}
+	
+})();
+
 
 $(document).ready(function(){
 	FLICKR.images.init();
 	FLICKR.eventHandlers.init();
+	FLICKR.injectLightbox.init();
 });
