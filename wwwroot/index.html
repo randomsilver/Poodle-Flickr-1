@@ -10,10 +10,14 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/global.css">
 	</head>
 	<body>
-		<h1>Flickr Gallery</h1>
-		<div class="container">
+        <div id="loading"></div>
+        <div id="parallax-wood" class="parallax"></div>
+        <div id="parallax-picture-1" class="parallax"></div>
+        <div id="parallax-picture-2" class="parallax"></div>
+		<div id="page" class="container">
+            <h1>Flickr Gallery</h1>
 			<div class="sixteen columns clearfix">
-				<div id="image-gallery" class="twelve columns alpha">
+				<!--<div id="image-gallery" class="twelve columns alpha">
 					<h2>Image Gallery</h2>
 				</div>
 				<div id="filter-selection"  class="four columns omega">
@@ -29,8 +33,11 @@
 						<li><a href="#" class="grungy">Grungy</a></li>
 					</ul>
 				</div>
-                <div id="flickr-gallery"></div>
-                <div id="loadMoreContainer"><button id="loadMore">Load more</button></div>
+                -->
+                <div id="gallery-buttons"><span class="back">back</span><span class="forward">forward</span></div>
+                <div id="flickr-gallery-container">
+                    <div id="flickr-gallery"></div>
+                </div>
 			</div>
 		</div>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>

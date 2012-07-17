@@ -9,7 +9,8 @@ var FLICKR = window.FLICKR || {};
 
 FLICKR.imageContainer = '#flickr-gallery';
 FLICKR.imageCount = 0;
-FLICKR.page = 0;
+FLICKR.pages = 1;
+FLICKR.currentPage = 1;
 
 FLICKR.images = (function(){
 	var renderPhotos = function( data ) {
@@ -21,13 +22,13 @@ FLICKR.images = (function(){
 				mediumPhotoURL = basePhotoURL + '.jpg';
 
 			FLICKR.imageCount = FLICKR.imageCount + 1;
-			photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img id="flickr-img-' + FLICKR.imageCount + '" src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
+			photoString = photoString + '<a ' + 'title="' + rPhoto.title + '" href="'+ mediumPhotoURL +'"><img class="flickr-img" id="flickr-img-' + FLICKR.imageCount + '" src="' + thumbPhotoURL + '" alt="' + rPhoto.title + '"/></a>';           
 		});
 		
-		$('<div class="page" id="page-' + FLICKR.page + '">' + photoString + '</div>').appendTo(FLICKR.imageContainer);
+		$('<div class="page" id="page-' + FLICKR.pages + '">' + photoString + '</div>').appendTo(FLICKR.imageContainer);
 	};
 	
-	var requestPhotos = function( page ){
+	var requestPhotos = function( page, callback ){
 		var API_KEY = '3d979b1c03c5752ff713cb9446f74410',
 			GROUP_ID = '62496320%40N00',
 			photoSetURL,
@@ -37,14 +38,20 @@ FLICKR.images = (function(){
         photoSetURL = 'http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=' + API_KEY + 
         			   '&group_id=' + GROUP_ID +'&page=' + page + '&per_page=' + showOnPage + '&format=json&nojsoncallback=1';
 		
-		FLICKR.page = page;
+        // increasing total amount of pages in gallery
+		FLICKR.pages = page;
 		
         $.ajax({
 			url: photoSetURL,
-			dataType: 'jsonp',
-			success: function(data){
+			dataType: 'json',
+			success: function(data) {
+				
+				//rendering photos
 				renderPhotos( data );
-				FLICKR.montage.init( $('#page-' + FLICKR.page) );
+				
+				// image montage
+				FLICKR.montage.init( $('#page-' + FLICKR.pages), callback );
+				
 				//FLICKR.detectfaces.init();
 			}
 		});
@@ -52,7 +59,7 @@ FLICKR.images = (function(){
 
 	return{
 		init: function(){
-			requestPhotos();
+			requestPhotos( FLICKR.pages );
 			FLICKR.addFilter.init();
 		},
 		loadPhotos: requestPhotos
@@ -131,7 +138,7 @@ FLICKR.detectfaces = (function(){
 
 FLICKR.montage = (function(){
 	
- 	init = function( imageContainer ) {
+ 	init = function( imageContainer, callback ) {
  		var $container 	= imageContainer || $(FLICKR.imageContainer),
  			$imgs		= $container.find('img').hide(),
  			totalImgs	= $imgs.length,
@@ -146,18 +153,23 @@ FLICKR.montage = (function(){
  					$imgs.show();
  					$container.montage({
  						liquid 	: true,
- 						fillLastRow : false,
- 						margin: 2,
- 						minw : 100,
- 						alternateHeight	: true,
- 						alternateHeightRange : {
- 							min	: 100,
- 							max	: 240
- 						}
+ 						fillLastRow : true,
+ 						margin: 5,
+ 						fixedHeight : 140,
+ 						minw : 100
+// 						alternateHeight	: true,
+// 						alternateHeightRange : {
+// 							min	: 100,
+// 							max	: 240
+// 						}
  					});
+ 					if ( typeof callback === 'function' ) {
+ 						callback();
+ 					}
  				}
  			}).attr('src',$img.attr('src'));
  		});
+ 		
  	}
 	
  	return {
@@ -168,10 +180,90 @@ FLICKR.montage = (function(){
 
 })();
 
+FLICKR.gallery = (function(){
+	var rotatingTimeout = null,
+		pageWidth = 940,
+		galleryContainer = $( FLICKR.imageContainer );
+	
+	getCurrentPage = function() {
+		return FLICKR.currentPage;
+	};
+	
+	getTotalPages = function() {
+		return FLICKR.pages;
+	};
+	
+	moveToNextPage = function() {
+		if ( FLICKR.pages > FLICKR.currentPage ) {
+			FLICKR.currentPage = FLICKR.currentPage + 1;
+			movePage();
+			return FLICKR.currentPage;
+		} else {
+			return false;
+		}
+	};
+	
+	moveToPreviousPage = function() {
+		if ( FLICKR.currentPage > 1 ) {
+			FLICKR.currentPage = FLICKR.currentPage - 1;
+			movePage();
+			return FLICKR.currentPage;
+		} else {
+			return false;
+		}
+	};
+	
+	movePage = function() {
+		clearTimeout( rotatingTimeout );
+		var newLeftPos = getCurrentPage() * pageWidth - pageWidth;
+		moveSlider( newLeftPos );
+	};
+	
+	moveSlider = function( position ) {
+		//galleryContainer.addClass('animate-sliding')
+		galleryContainer.css('-webkit-transform', 'rotateY(15deg) translateX('+ (-position) +'px)');
+		rotatingTimeout = setTimeout(function(){
+			galleryContainer.css('-webkit-transform', 'rotateY(0deg) translateX('+ (-position) +'px)');
+		}, 800);
+	};
+	
+	return {
+		getCurrentPage: getCurrentPage,
+		getTotalPages: getTotalPages,
+		moveToNextPage: moveToNextPage,
+		moveToPreviousPage: moveToPreviousPage
+	};
+	
+})();
+
+FLICKR.eventHandlers = (function(){
+	init = function() {
+		
+		$('.forward').click(function() {
+			var nextPageToLoad,
+				movedToNextPage = FLICKR.gallery.moveToNextPage();
+			
+			if ( movedToNextPage === false ) {
+				pageToLoad = FLICKR.gallery.getTotalPages() + 1;
+				FLICKR.images.loadPhotos( pageToLoad, function() {
+					FLICKR.gallery.moveToNextPage();
+					});
+			}
+		});
+		
+		$('.back').click(function() {
+			FLICKR.gallery.moveToPreviousPage();
+		});
+	};
+	
+ 	return {
+ 		init: init
+ 	};
+
+})();
+
+
 $(document).ready(function(){
 	FLICKR.images.init();
-	$('#loadMore').click(function() {
-		FLICKR.page = FLICKR.page + 1;
-		FLICKR.images.loadPhotos( FLICKR.page );
-	});
+	FLICKR.eventHandlers.init();
 });
