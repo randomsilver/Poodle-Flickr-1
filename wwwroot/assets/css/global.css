@@ -123,9 +123,11 @@ Table of contents
     /* gallery scrolling */
     #flickr-gallery-container {
         overflow-x: hidden;
-        width: 100%;
-        perspective: 800;
-        -webkit-perspective: 800;
+        width: 940px;
+        -webkit-perspective: 800px;
+        -moz-perspective: 800px;
+        -o-perspective: 800px;
+        perspective: 800px;
     }
     #flickr-gallery {
         width: 100%;
@@ -133,25 +135,43 @@ Table of contents
         left: 0;
         position: relative;
         -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -o-transform: translateZ(0);
+        transform: translateZ(0);
         -webkit-transition: all 0.8s ease-out;
         -moz-transition: all 0.8s ease-out;
         -o-transition: all 0.8s ease-out;
         transition: all 0.8s ease-out;
+        height: 600px;
     }
     #flickr-gallery.animate-sliding {
         -webkit-transform: rotateY(15deg);
     }
     #flickr-gallery .page {
         display: inline-block;
-        width: 938px;
+        width: 940px;
+        overflow: hidden;
+        height: 99%;
     }
 
-    /* loading box */
-    #loading {
+    /* loading box and overlay */
+    .ui-overlay {
         width: 100%;
         height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #181818;
+        opacity: .70;
+        filter: Alpha(Opacity=70);
+        z-index: 1001;
+    }
+    .loading {
         text-align: center;
-        display: none;
+        color: #fff;
+        font-size: 1em;
+        position: relative;
+        top: 50%;
     }
 /* ------------------------------------------------
    4.0 - Fonts 

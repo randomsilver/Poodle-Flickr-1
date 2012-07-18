@@ -11,6 +11,10 @@ FLICKR.imageContainer = '#flickr-gallery';
 FLICKR.imageCount = 0;
 FLICKR.pages = 1;
 FLICKR.currentPage = 1;
+FLICKR.overlay = new Overlay({
+						container:'body',
+						content: '<div class="loading">Loading...</div>'
+					 });
 
 FLICKR.images = (function(){
 
@@ -152,7 +156,7 @@ FLICKR.montage = (function(){
  				if( cnt === totalImgs ) {
  					$imgs.show();
  					$container.montage({
- 						liquid 	: true,
+ 						liquid 	: false,
  						fillLastRow : true,
  						margin: 5,
  						fixedHeight : 140,
@@ -218,10 +222,19 @@ FLICKR.gallery = (function(){
 	};
 	
 	moveSlider = function( position ) {
+		var cssTransformStart = 'rotateY(15deg) translateX('+ (-position) +'px)',
+			cssTransformEnd = 'rotateY(0deg) translateX('+ (-position) +'px)';
+		
 		//galleryContainer.addClass('animate-sliding')
-		galleryContainer.css('-webkit-transform', 'rotateY(15deg) translateX('+ (-position) +'px)');
+		galleryContainer.css({
+			'-webkit-transform': cssTransformStart,
+			'-moz-transform': cssTransformStart
+		});
 		rotatingTimeout = setTimeout(function(){
-			galleryContainer.css('-webkit-transform', 'rotateY(0deg) translateX('+ (-position) +'px)');
+			galleryContainer.css({
+				'-webkit-transform': cssTransformEnd,
+				'-moz-transform': cssTransformEnd
+			});
 		}, 800);
 	};
 	
@@ -238,14 +251,24 @@ FLICKR.eventHandlers = (function(){
 	init = function() {
 		
 		$('.forward').click(function() {
-			var nextPageToLoad,
+			var callback,
+				nextPageToLoad,
 				movedToNextPage = FLICKR.gallery.moveToNextPage();
 			
+			// if we clicked forward and we are located on the last page then we need to preload next page from FLICKR
 			if ( movedToNextPage === false ) {
+				
+				// showing overlay
+				FLICKR.overlay.show();
+				
 				pageToLoad = FLICKR.gallery.getTotalPages() + 1;
-				FLICKR.images.loadPhotos( pageToLoad, function() {
+				callback = function() {
+					FLICKR.overlay.hide();
 					FLICKR.gallery.moveToNextPage();
-					});
+				};
+		
+				// loading next page from flickr
+				FLICKR.images.loadPhotos( pageToLoad, callback);
 			}
 		});
 		
