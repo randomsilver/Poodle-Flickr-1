@@ -244,7 +244,8 @@ FLICKR.eventHandlers = (function(){
 				pageToLoad = FLICKR.gallery.getTotalPages() + 1;
 				FLICKR.images.loadPhotos( pageToLoad, function() {
 					FLICKR.gallery.moveToNextPage();
-					});
+					FLICKR.injectLightbox.init();
+				});
 			}
 		});
 		
@@ -260,25 +261,48 @@ FLICKR.eventHandlers = (function(){
 })();
 
 FLICKR.injectLightbox = (function(){
+
+	var createLightbox = function(currentImage){
 	
-	$imageThumb = $('#flickr-gallery a');
+		$('body').prepend('<div id="olMask" />');
+		
+		var $overlayMask = $('#olMask'),
+		maskHeight = $(window).outerHeight(),
+		imageHeight = $overlayMask.find('img').height();
+		wrapperMargin = (maskHeight/2) - ($overlayMask.find('img').height()/2);
+		
+		$overlayMask.css({
+			height: maskHeight
+		});
+		
+		$overlayMask.append('<div class="imageWrapper"><img src="'+ currentImage +'"/></div>');
+		
+		$overlayMask.find('img').css({
+			marginTop: wrapperMargin
+		});
+		
+	};
 	
-	var openLightbox = function(){
-	
-		console.log($imageThumb);
+	var getFullSizeImage = function(){
+		
+		$imageThumb = $('#flickr-gallery a');
 		
 		$imageThumb.on('click', function(e){
+			
+			var currentImage = $(this).attr('href');
+		
 			e.preventDefault();
+			
+			createLightbox(currentImage);
+		
 		})			
-	
 	};
 	
 	return{
 		
 		init: function(){
-			openLightbox();
+			getFullSizeImage();
 		}
-		
 	}
 	
 })();
@@ -287,5 +311,5 @@ FLICKR.injectLightbox = (function(){
 $(document).ready(function(){
 	FLICKR.images.init();
 	FLICKR.eventHandlers.init();
-	FLICKR.injectLightbox.init();
+	//FLICKR.injectLightbox.init();
 });

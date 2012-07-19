@@ -57,6 +57,7 @@
 		color: #444;
 		-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
 		-webkit-text-size-adjust: 100%;
+		position: relative;
  }
 
 
@@ -339,4 +340,19 @@
 	.half-bottom { margin-bottom: 10px !important; }
 	.add-bottom { margin-bottom: 20px !important; }
 
+/* #Overlay
+================================================== */
 
+#olMask{
+	width: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+	position: absolute;
+	top: 0;
+	left: 0;
+	text-align: center;
+}
+
+#olMask img{
+	top: 50%;
+}
