@@ -19,7 +19,7 @@ Overlay = (function(){
 				this.overlay.css('filter', 'alpha(opacity=70)');
 			}
 		
-		    this.adjustHeight();
+		    //this.adjustHeight();
 		
 		    $(this.overlay).fadeIn();
 	    },
