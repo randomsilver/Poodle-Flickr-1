@@ -13,7 +13,7 @@ FLICKR.pages = 1;
 FLICKR.currentPage = 1;
 FLICKR.overlay = new Overlay({
 						container:'body',
-						content: '<div class="loading">Loading...</div>'
+						content: ''
 					 });
 
 FLICKR.images = (function(){
@@ -64,7 +64,19 @@ FLICKR.images = (function(){
 
 	return{
 		init: function(){
-			requestPhotos( FLICKR.pages );
+			
+			// showing loading dialog
+			FLICKR.overlay.show();
+			$('#loading').show();
+			
+			var callback = function() {
+				$('#loading').hide();
+				FLICKR.overlay.hide();
+			};
+			
+			// loading first 18 photos
+			requestPhotos( FLICKR.pages, callback );
+			
 			FLICKR.addFilter.init();
 		},
 		loadPhotos: requestPhotos
@@ -260,9 +272,11 @@ FLICKR.eventHandlers = (function(){
 				
 				// showing overlay
 				FLICKR.overlay.show();
+				$('#loading').show();
 				
 				pageToLoad = FLICKR.gallery.getTotalPages() + 1;
 				callback = function() {
+					$('#loading').hide();
 					FLICKR.overlay.hide();
 					FLICKR.gallery.moveToNextPage();
 				};
