@@ -73,22 +73,25 @@ Table of contents
     .parallax {
         width: 100%;
         height: 100%;
-        -moz-transition: all 0.3s ease 0s;
+        -moz-transition: all 0.8s ease 0s;
+        -webkit-transition: all 0.8s ease 0s;
+        -ms-transition: all 0.8s ease 0s;
+        transition: all 0.8s ease 0s;
         position: fixed;
     }
     .parallax.animated {
     }
     #parallax-wood {
         z-index: 15;
-        background: url('../img/wood_bg.jpg') top left repeat-x;
+        background: url('../img/wood_bg.jpg') -200px -450px repeat-x;
     }
     #parallax-picture-1 {
         z-index: 16;
-        background: url('../img/Unicorn.jpg') 300px 50px no-repeat;
+        background: url('../img/Unicorn.jpg') 20px 50px no-repeat;
     }
     #parallax-picture-2 {
         z-index: 17;
-        background: url('../img/frame.jpg') 300px 50px no-repeat;
+        background: url('../img/frame.jpg') 824px 300px no-repeat;
     }
     
     /* gallery buttons */

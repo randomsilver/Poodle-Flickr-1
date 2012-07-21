@@ -259,6 +259,63 @@ FLICKR.gallery = (function(){
 	
 })();
 
+FLICKR.parallax = (function(){
+	var currentStep = 0,
+		stepsLimit = 15,// px
+		elements = [
+            {
+         		el:$('#parallax-wood'),
+            	topPos: -450,
+            	leftPos: -290,
+            	step: 100
+            },
+            {
+            	el: $('#parallax-picture-1'),
+            	topPos: 50,
+            	leftPos: 20,
+            	step: 150
+            },
+            {
+            	el: $('#parallax-picture-2'),
+            	topPos: 300,
+            	leftPos: 824,
+            	step: 50
+            }
+	   ];
+		
+	
+	moveForward = function(){
+		if ( currentStep < stepsLimit ) {
+			currentStep = currentStep + 1;
+			move( 'forward' );
+		}
+	};
+	
+	moveBackward = function(){
+		if ( currentStep > 1 ) {
+			currentStep = currentStep - 1;
+			move( 'backward' );
+		}
+	};
+	
+	move = function( direction ){
+		$.each(elements, function(index, parralax) {
+			if ( direction === 'forward' ){
+				parralax.leftPos = parralax.leftPos + parralax.step;
+			} else {
+				parralax.leftPos = parralax.leftPos - parralax.step;
+			}
+			parralax.el.css('background-position', parralax.leftPos+'px' + ' ' + parralax.topPos+'px'); 
+		});
+	};
+	
+	return {
+		moveForward: moveForward,
+		moveBackward: moveBackward
+	};
+		
+})();
+
 FLICKR.eventHandlers = (function(){
 	init = function() {
 		
@@ -284,10 +341,15 @@ FLICKR.eventHandlers = (function(){
 				// loading next page from flickr
 				FLICKR.images.loadPhotos( pageToLoad, callback);
 			}
+			
+			// parallax stuff
+			FLICKR.parallax.moveForward();
+			
 		});
 		
 		$('.back').click(function() {
 			FLICKR.gallery.moveToPreviousPage();
+			FLICKR.parallax.moveBackward();
 		});
 	};
 	
