@@ -242,6 +242,11 @@ FLICKR.gallery = (function(){
 			'-webkit-transform': cssTransformStart,
 			'-moz-transform': cssTransformStart
 		});
+		galleryContainer.find('.frame').css({
+			'-webkit-transform': 'translateX('+ (position) +'px)',
+			'-moz-transform': 'translateX('+ (position) +'px)'
+		});
+		
 		rotatingTimeout = setTimeout(function(){
 			galleryContainer.css({
 				'-webkit-transform': cssTransformEnd,
