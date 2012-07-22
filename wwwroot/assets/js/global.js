@@ -271,8 +271,8 @@ FLICKR.parallax = (function(){
             },
             {
             	el: $('#parallax-picture-1'),
-            	topPos: 50,
-            	leftPos: 20,
+            	topPos: 60,
+            	leftPos: 10,
             	step: 150
             },
             {
@@ -292,7 +292,7 @@ FLICKR.parallax = (function(){
 	};
 	
 	moveBackward = function(){
-		if ( currentStep > 1 ) {
+		if ( currentStep >= 1 ) {
 			currentStep = currentStep - 1;
 			move( 'backward' );
 		}
