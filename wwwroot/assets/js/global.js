@@ -280,7 +280,7 @@ FLICKR.parallax = (function(){
             },
             {
             	el: $('#parallax-picture-2'),
-            	topPos: 300,
+            	topPos: 100,
             	leftPos: 824,
             	step: 50
             },
@@ -376,8 +376,8 @@ FLICKR.eventHandlers = (function(){
 })();
 
 FLICKR.injectLightbox = (function(){
-
-	var createLightbox = function(currentImage){
+	
+var createLightbox = function(currentImage){
 	
 		$('body').prepend('<div id="olMask" />');
 		
