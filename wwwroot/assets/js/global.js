@@ -11,8 +11,13 @@ FLICKR.imageContainer = '#flickr-gallery';
 FLICKR.imageCount = 0;
 FLICKR.pages = 1;
 FLICKR.currentPage = 1;
+FLICKR.overlay = new Overlay({
+						container:'body',
+						content: ''
+					 });
 
 FLICKR.images = (function(){
+
 	var renderPhotos = function( data ) {
 		var photoString = '';
 		
@@ -51,6 +56,7 @@ FLICKR.images = (function(){
 				
 				// image montage
 				FLICKR.montage.init( $('#page-' + FLICKR.pages), callback );
+				
 				//FLICKR.detectfaces.init();
 			}
 		});
@@ -58,7 +64,19 @@ FLICKR.images = (function(){
 
 	return{
 		init: function(){
-			requestPhotos( FLICKR.pages );
+			
+			// showing loading dialog
+			FLICKR.overlay.show();
+			$('#loading').show();
+			
+			var callback = function() {
+				$('#loading').hide();
+				FLICKR.overlay.hide();
+			};
+			
+			// loading first 18 photos
+			requestPhotos( FLICKR.pages, callback );
+			
 			FLICKR.addFilter.init();
 		},
 		loadPhotos: requestPhotos
@@ -67,13 +85,12 @@ FLICKR.images = (function(){
 }());
 
 FLICKR.addFilter = (function(){
-
+	
 	var bindFliterListener = function(){
 	
-		var image = Caman("#flickr-img-5", function () {});
+		var image = Caman("#localImg", function () {});
 		
 		function render(filter) {
-			
 			image.revert(function () {
 				image[filter]().render();
 			});
@@ -90,7 +107,7 @@ FLICKR.addFilter = (function(){
 	
 	return{
 		init: function(){
-			Caman.remoteProxy = '../proxies/caman_proxy.php';
+			Caman.remoteProxy = Caman.IO.useProxy('php');
 			bindFliterListener();
 		}
 	}
@@ -151,7 +168,7 @@ FLICKR.montage = (function(){
  				if( cnt === totalImgs ) {
  					$imgs.show();
  					$container.montage({
- 						liquid 	: true,
+ 						liquid 	: false,
  						fillLastRow : true,
  						margin: 5,
  						fixedHeight : 140,
@@ -179,8 +196,8 @@ FLICKR.montage = (function(){
 
 FLICKR.gallery = (function(){
 	var rotatingTimeout = null,
-		pageWidth = 940,
-		galleryContainer = $( FLICKR.imageContainer );
+		pageWidth = 870,
+		galleryContainer = $( '#flickr-gallery-container #flickr-gallery' );
 	
 	getCurrentPage = function() {
 		return FLICKR.currentPage;
@@ -217,11 +234,23 @@ FLICKR.gallery = (function(){
 	};
 	
 	moveSlider = function( position ) {
-		//galleryContainer.addClass('animate-sliding')
-		galleryContainer.css('-webkit-transform', 'rotateY(15deg) translateX('+ (-position) +'px)');
+		var cssTransformStart = 'rotateY(15deg) translateX('+ (-position) +'px)',
+			cssTransformEnd = 'rotateY(0deg) translateX('+ (-position) +'px)';
+		
+		animate( galleryContainer, cssTransformStart );
+		animate( $('#silverFrame'), 'rotateY(15deg)' );
+		
 		rotatingTimeout = setTimeout(function(){
-			galleryContainer.css('-webkit-transform', 'rotateY(0deg) translateX('+ (-position) +'px)');
+			animate( galleryContainer, cssTransformEnd );
+			animate( $('#silverFrame'), 'rotateY(0deg)' );
 		}, 800);
+	};
+	
+	animate = function( el, cssTransform ) {
+		el.css({
+			'-webkit-transform': cssTransform,
+			'-moz-transform': cssTransform
+		});
 	};
 	
 	return {
@@ -233,24 +262,98 @@ FLICKR.gallery = (function(){
 	
 })();
 
+FLICKR.parallax = (function(){
+	var currentStep = 0,
+		stepsLimit = 15,// px
+		elements = [
+            {
+         		el:$('#parallax-wood'),
+            	topPos: -450,
+            	leftPos: -290,
+            	step: 100
+            },
+            {
+            	el: $('#parallax-picture-1'),
+            	topPos: 60,
+            	leftPos: 10,
+            	step: 150
+            },
+            {
+            	el: $('#parallax-picture-2'),
+            	topPos: 300,
+            	leftPos: 824,
+            	step: 50
+            }
+	   ];
+		
+	
+	moveForward = function(){
+		if ( currentStep < stepsLimit ) {
+			currentStep = currentStep + 1;
+			move( 'forward' );
+		}
+	};
+	
+	moveBackward = function(){
+		if ( currentStep >= 1 ) {
+			currentStep = currentStep - 1;
+			move( 'backward' );
+		}
+	};
+	
+	move = function( direction ){
+		$.each(elements, function(index, parralax) {
+			if ( direction === 'forward' ){
+				parralax.leftPos = parralax.leftPos + parralax.step;
+			} else {
+				parralax.leftPos = parralax.leftPos - parralax.step;
+			}
+			parralax.el.css('background-position', parralax.leftPos+'px' + ' ' + parralax.topPos+'px'); 
+		});
+	};
+	
+	return {
+		moveForward: moveForward,
+		moveBackward: moveBackward
+	};
+		
+})();
+
 FLICKR.eventHandlers = (function(){
 	init = function() {
 		
 		$('.forward').click(function() {
-			var nextPageToLoad,
+			var callback,
+				nextPageToLoad,
 				movedToNextPage = FLICKR.gallery.moveToNextPage();
 			
+			// if we clicked forward and we are located on the last page then we need to preload next page from FLICKR
 			if ( movedToNextPage === false ) {
+				
+				// showing overlay
+				FLICKR.overlay.show();
+				$('#loading').show();
+				
 				pageToLoad = FLICKR.gallery.getTotalPages() + 1;
-				FLICKR.images.loadPhotos( pageToLoad, function() {
+				callback = function() {
+					$('#loading').hide();
+					FLICKR.overlay.hide();
 					FLICKR.gallery.moveToNextPage();
 					FLICKR.injectLightbox.init();
-				});
+				};
+		
+				// loading next page from flickr
+				FLICKR.images.loadPhotos( pageToLoad, callback);
 			}
+			
+			// parallax stuff
+			FLICKR.parallax.moveForward();
+			
 		});
 		
 		$('.back').click(function() {
 			FLICKR.gallery.moveToPreviousPage();
+			FLICKR.parallax.moveBackward();
 		});
 	};
 	
@@ -295,7 +398,7 @@ FLICKR.injectLightbox = (function(){
 			
 			createLightbox(currentImage);
 		
-		})			
+		});		
 	};
 	
 	return{
@@ -307,9 +410,8 @@ FLICKR.injectLightbox = (function(){
 	
 })();
 
-
 $(document).ready(function(){
 	FLICKR.images.init();
 	FLICKR.eventHandlers.init();
-	//FLICKR.injectLightbox.init();
+	FLICKR.injectLightbox.init();
 });
