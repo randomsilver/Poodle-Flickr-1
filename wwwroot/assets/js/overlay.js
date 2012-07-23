@@ -12,11 +12,12 @@ Overlay = (function(){
 			if ( this.overlay === null ) {
 				this.overlay = $('<div class="ui-overlay"></div>');
 				this.overlay.hide();
-				if ( this.options.content ) {
-					this.overlay.append( this.options.content );
-				}
 				this.overlay.appendTo( this.container );
 				this.overlay.css('filter', 'alpha(opacity=70)');
+			}
+			
+			if ( this.options.content ) {
+				this.overlay.append( this.options.content );
 			}
 		
 		    //this.adjustHeight();
