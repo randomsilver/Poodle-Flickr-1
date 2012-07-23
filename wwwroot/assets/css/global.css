@@ -97,6 +97,10 @@ Table of contents
         z-index: 18;
         background: url('../img/lee.png') 60px 350px no-repeat;
     }
+	#parallax-picture-4 {
+        z-index: 18;
+        background: url('../img/will.png') 1044px 20px no-repeat;
+    }
     /* gallery buttons */
     #gallery-buttons {
         position: relative;
