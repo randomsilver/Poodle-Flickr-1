@@ -187,10 +187,10 @@ Table of contents
         -moz-transform: translateZ(0);
         -o-transform: translateZ(0);
         transform: translateZ(0);
-        -webkit-transition: all 0.8s ease-out;
-        -moz-transition: all 0.8s ease-out;
-        -o-transition: all 0.8s ease-out;
-        transition: all 0.8s ease-out;
+        -webkit-transition: all 0.8s ease-out 0.1s;
+        -moz-transition: all 0.8s ease-out 0.1s;
+        -o-transition: all 0.8s ease-out 0.1s;
+        transition: all 0.8s ease-out 0.1s;
     	background: url('../img/big-frame.png') -12px 0px no-repeat;
     }
     #flickr-gallery.animate-sliding {
@@ -218,6 +218,8 @@ Table of contents
         opacity: .70;
         filter: Alpha(Opacity=70);
         z-index: 1001;
+        -webkit-transform: translateZ(1000px);
+        -moz-transform: translateZ(1000px);
     }
     #loading {
     	display: none;
@@ -227,6 +229,8 @@ Table of contents
     	position: absolute;
     	width: 100%;
         height: 100%;
+        -webkit-transform: translateZ(1000px);
+        -moz-transform: translateZ(1000px);
     }
     #loading img {
     	position: relative;
