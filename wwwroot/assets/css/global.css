@@ -151,7 +151,7 @@ Table of contents
         -moz-transition: all 0.8s ease-out;
         -o-transition: all 0.8s ease-out;
         transition: all 0.8s ease-out;
-        height: 600px;
+        height: 560px;
     	padding-top: 65px;
     }
     #flickr-gallery-container .frame {
