@@ -280,7 +280,7 @@ FLICKR.parallax = (function(){
             },
             {
             	el: $('#parallax-picture-2'),
-            	topPos: 100,
+            	topPos: 370,
             	leftPos: 824,
             	step: 50
             },
