@@ -46,9 +46,7 @@ Table of contents
 /* ------------------------------------------------
    3.0 - Default 
  --------------------------------------------------*/
-    #flickr-gallery {
-        width: 938px;    
-    }
+    /* image montage */
     .am-wrapper {
 		float:left;
 		position:relative;
@@ -58,6 +56,8 @@ Table of contents
 		position:absolute;
 		outline:none;
 	}
+	
+	/* face-detection */
 	.face {
 	    border: 2px solid white;
     }
@@ -65,7 +65,94 @@ Table of contents
         clear: both;
     }
 	
+    /* parralax stuffs */
+    #page {
+        position: relative;
+        z-index: 20;    
+    }
+    .parallax {
+        width: 100%;
+        height: 100%;
+        -moz-transition: all 0.3s ease 0s;
+        position: fixed;
+    }
+    .parallax.animated {
+    }
+    #parallax-wood {
+        z-index: 15;
+        background: url('../img/wood_bg.jpg') top left repeat-x;
+    }
+    #parallax-picture-1 {
+        z-index: 16;
+        background: url('../img/Unicorn.jpg') 300px 50px no-repeat;
+    }
+    #parallax-picture-2 {
+        z-index: 17;
+        background: url('../img/frame.jpg') 300px 50px no-repeat;
+    }
+    
+    /* gallery buttons */
+    #gallery-buttons {
+        position: relative;
+        z-index: 30;
+    }
+    #gallery-buttons span {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        top: 180px;
+        text-indent: -999em;
+        cursor: pointer;
+        background: url('../img/bg_project-slider_nav.png') 0 -180px no-repeat;
+    }
+    #gallery-buttons span.back {
+        left: -60px;
+        background-position: -50px 0;
+    }
+    #gallery-buttons span.forward {
+        right: -60px;
+        background-position: 0 -180px;
+    }
+    #gallery-buttons span.back:hover {
+        background-position: -50px -60px;
+    }
+    #gallery-buttons span.forward:hover {
+        background-position: 0 -240px ;
+    }
+    
+    /* gallery scrolling */
+    #flickr-gallery-container {
+        overflow-x: hidden;
+        width: 100%;
+        perspective: 800;
+        -webkit-perspective: 800;
+    }
+    #flickr-gallery {
+        width: 100%;
+        white-space: nowrap;
+        left: 0;
+        position: relative;
+        -webkit-transform: translateZ(0);
+        -webkit-transition: all 0.8s ease-out;
+        -moz-transition: all 0.8s ease-out;
+        -o-transition: all 0.8s ease-out;
+        transition: all 0.8s ease-out;
+    }
+    #flickr-gallery.animate-sliding {
+        -webkit-transform: rotateY(15deg);
+    }
+    #flickr-gallery .page {
+        display: inline-block;
+        width: 938px;
+    }
 
+    /* loading box */
+    #loading {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        display: none;
+    }
 /* ------------------------------------------------
    4.0 - Fonts 
  --------------------------------------------------*/
