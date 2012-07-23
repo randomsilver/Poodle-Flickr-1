@@ -103,7 +103,7 @@ Table of contents
         position: absolute;
         width: 60px;
         height: 60px;
-        top: 180px;
+        top: 360px;
         text-indent: -999em;
         cursor: pointer;
         background: url('../img/bg_project-slider_nav.png') 0 -180px no-repeat;
@@ -128,12 +128,15 @@ Table of contents
     	width: 975px;
 	}
     #flickr-gallery-container {
-        overflow-x: hidden;
+        margin-top: 75px;
         width: 975px;
         -webkit-perspective: 800px;
         -moz-perspective: 800px;
         -o-perspective: 800px;
         perspective: 800px;
+        transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
     }
     #flickr-gallery {
         width: 100%;
@@ -151,12 +154,35 @@ Table of contents
         height: 600px;
     	padding-top: 65px;
     }
-    #flickr-gallery .frame {
-    	position: absolute;
-    	z-index: 10000;
+    #flickr-gallery-container .frame {
+        overflow-x: hidden;
+    	width: 870px;
+    	height: 665px;
+    	top: 0;
+        padding: 0px 0 50px 50px;
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -o-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-transition: all 0.8s ease-out;
+        -moz-transition: all 0.8s ease-out;
+        -o-transition: all 0.8s ease-out;
+        transition: all 0.8s ease-out;
+        -webkit-perspective: 800px;
+        -moz-perspective: 800px;
+        -o-perspective: 800px;
+        perspective: 800px;
+        transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
+    }
+    #flickr-gallery-container #silverFrame {
+        position: absolute;
     	width: 1024px;
     	height: 665px;
     	top: 0;
+        left: 0;
+        z-index: 10;
         -webkit-transform: translateZ(0);
         -moz-transform: translateZ(0);
         -o-transform: translateZ(0);
@@ -172,9 +198,13 @@ Table of contents
     }
     #flickr-gallery .page {
         display: inline-block;
-        width: 940px;
+        width: 870px;
         overflow: hidden;
         height: 99%;
+    }
+    #flickr-gallery .page a {
+        position: relative;
+        z-index: 15;
     }
 
     /* loading box and overlay */
