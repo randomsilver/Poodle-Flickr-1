@@ -155,15 +155,17 @@ Table of contents
     	padding-top: 65px;
     }
     #flickr-gallery-container .frame {
+        position: relative;
+        z-index: 10;
         overflow-x: hidden;
-    	width: 870px;
+    	width: 850px;
     	height: 665px;
     	top: 0;
-        padding: 0px 0 50px 50px;
-        -webkit-transform: translateZ(0);
-        -moz-transform: translateZ(0);
-        -o-transform: translateZ(0);
-        transform: translateZ(0);
+        padding: 0px 0 50px 0px;
+        -webkit-transform: translateX(50px);
+        -moz-transform: translateZ(50px);
+        -o-transform: translateZ(50px);
+        transform: translateZ(50px);
         -webkit-transition: all 0.8s ease-out;
         -moz-transition: all 0.8s ease-out;
         -o-transition: all 0.8s ease-out;
@@ -198,7 +200,7 @@ Table of contents
     }
     #flickr-gallery .page {
         display: inline-block;
-        width: 870px;
+        width: 850px;
         overflow: hidden;
         height: 99%;
     }

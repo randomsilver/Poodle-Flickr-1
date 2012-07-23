@@ -171,7 +171,7 @@ FLICKR.montage = (function(){
  						liquid 	: false,
  						fillLastRow : true,
  						margin: 5,
- 						fixedHeight : 140,
+ 						fixedHeight : 130,
  						minw : 100
 // 						alternateHeight	: true,
 // 						alternateHeightRange : {
@@ -196,7 +196,7 @@ FLICKR.montage = (function(){
 
 FLICKR.gallery = (function(){
 	var rotatingTimeout = null,
-		pageWidth = 870,
+		pageWidth = 850,
 		galleryContainer = $( '#flickr-gallery-container #flickr-gallery' );
 	
 	getCurrentPage = function() {
