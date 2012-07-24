@@ -281,7 +281,7 @@ FLICKR.parallax = (function(){
             {
             	el: $('#parallax-picture-2'),
             	topPos: 370,
-            	leftPos: 824,
+            	leftPos: 1144,
             	step: 50
             },
             {

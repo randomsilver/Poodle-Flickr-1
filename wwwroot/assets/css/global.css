@@ -91,7 +91,7 @@ Table of contents
     }
     #parallax-picture-2 {
         z-index: 17;
-        background: url('../img/viv_elfweave.png') 824px 370px no-repeat;
+        background: url('../img/viv_elfweave.png') 1144px 370px no-repeat;
     }
 	#parallax-picture-3 {
         z-index: 18;
@@ -110,7 +110,7 @@ Table of contents
         position: absolute;
         width: 60px;
         height: 60px;
-        top: 360px;
+        top: 300px;
         text-indent: -999em;
         cursor: pointer;
         background: url('../img/bg_project-slider_nav.png') 0 -180px no-repeat;
@@ -135,7 +135,7 @@ Table of contents
     	width: 975px;
 	}
     #flickr-gallery-container {
-        margin-top: 75px;
+        margin-top: 0px;
         width: 975px;
         -webkit-perspective: 800px;
         -moz-perspective: 800px;
