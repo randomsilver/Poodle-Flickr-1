@@ -265,8 +265,8 @@ Table of contents
 	}
 	.imageWrapper.animate {
 		opacity: 1;
-		-moz-transform: scale(1);
-  		-webkit-transform: scale(1);
+		-moz-transform: translateZ(200px) scale(1);
+  		-webkit-transform: translateZ(200px) scale(1);
 	}
 	.imageWrapper img {
        cursor: pointer;
