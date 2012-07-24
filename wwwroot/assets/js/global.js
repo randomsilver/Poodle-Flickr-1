@@ -367,6 +367,10 @@ FLICKR.eventHandlers = (function(){
 			FLICKR.gallery.moveToPreviousPage();
 			FLICKR.parallax.moveBackward();
 		});
+		
+		// lightbox handlers
+		FLICKR.injectLightbox.init();
+		
 	};
 	
  	return {
@@ -377,53 +381,53 @@ FLICKR.eventHandlers = (function(){
 
 FLICKR.injectLightbox = (function(){
 	
-var createLightbox = function(currentImage){
-	
-		$('body').prepend('<div id="olMask" />');
+	var createLightbox = function(currentImage){
+		var img = $('<img src="'+ currentImage +'" />'),
+			wrapper = $('<div class="imageWrapper"/>');
 		
-		var $overlayMask = $('#olMask'),
-		maskHeight = $(window).outerHeight(),
-		imageHeight = $overlayMask.find('img').height();
-		wrapperMargin = (maskHeight/2) - ($overlayMask.find('img').height()/2);
+		img.load(function(){
+			$(this).parent().addClass('animate');
+			$('#loading').hide();
+		}).appendTo( wrapper );
 		
-		$overlayMask.css({
-			height: maskHeight
-		});
+		FLICKR.overlay.show();
+		$('#loading').show();
 		
-		$overlayMask.append('<div class="imageWrapper"><img src="'+ currentImage +'"/></div>');
-		
-		$overlayMask.find('img').css({
-			marginTop: wrapperMargin
-		});
-		
+		$('body').append(wrapper);
 	};
 	
-	var getFullSizeImage = function(){
+	var assignHandlers = function(){
 		
-		$imageThumb = $('#flickr-gallery a');
+		$imageThumb = $('#flickr-gallery');
 		
-		$imageThumb.on('click', function(e){
-			
+		// lightbox opening
+		$imageThumb.on('click', 'a', null, function(e){
 			var currentImage = $(this).attr('href');
 		
 			e.preventDefault();
-			
 			createLightbox(currentImage);
+		});
 		
-		});		
+		// lightbox closing
+		$('body').on('click', '.imageWrapper img', null, function(e){
+			removeLightBox();
+		});
 	};
 	
-	return{
-		
+	var removeLightBox = function(){
+		FLICKR.overlay.hide();
+		$('.imageWrapper').remove();
+	};
+	
+	return {
 		init: function(){
-			getFullSizeImage();
+			assignHandlers();
 		}
-	}
+	};
 	
 })();
 
 $(document).ready(function(){
 	FLICKR.images.init();
 	FLICKR.eventHandlers.init();
-	FLICKR.injectLightbox.init();
 });
